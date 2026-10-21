@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#12161c"/>
+  <defs><pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#222831" stroke-width="1"/></pattern></defs>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <text x="800" y="205" text-anchor="middle" fill="#f2f4f7" font-family="DejaVu Sans,Arial,sans-serif" font-size="112" font-weight="700">CTR ≠ ЦЕННОСТЬ</text>
+  <text x="800" y="290" text-anchor="middle" fill="#aeb8c4" font-family="DejaVu Sans,Arial,sans-serif" font-size="42">Когда метрика становится целью</text>
+  <rect x="610" y="442" width="380" height="116" rx="22" fill="#1d242e" stroke="#5c6776" stroke-width="3"/>
+  <text x="800" y="514" text-anchor="middle" fill="#f2f4f7" font-family="DejaVu Sans,Arial,sans-serif" font-size="34" font-weight="700">OBJECTIVE FUNCTION</text>
+  <path d="M645 558L450 655" fill="none" stroke="#5b9cff" stroke-width="9"/>
+  <path d="M955 558L1150 655" fill="none" stroke="#75dca6" stroke-width="9"/>
+  <rect x="130" y="625" width="400" height="130" rx="20" fill="#1d242e" stroke="#5b9cff" stroke-width="4"/>
+  <text x="330" y="685" text-anchor="middle" fill="#5b9cff" font-family="DejaVu Sans,Arial,sans-serif" font-size="44" font-weight="700">CTR ↑</text>
+  <text x="330" y="730" text-anchor="middle" fill="#aeb8c4" font-family="DejaVu Sans,Arial,sans-serif" font-size="30">short-term signal</text>
+  <rect x="1070" y="625" width="400" height="130" rx="20" fill="#1d242e" stroke="#75dca6" stroke-width="4"/>
+  <text x="1270" y="685" text-anchor="middle" fill="#75dca6" font-family="DejaVu Sans,Arial,sans-serif" font-size="44" font-weight="700">VALUE ↑</text>
+  <text x="1270" y="730" text-anchor="middle" fill="#aeb8c4" font-family="DejaVu Sans,Arial,sans-serif" font-size="30">long-term proxy</text>
+  <text x="1530" y="840" text-anchor="end" fill="#6f7884" font-family="DejaVu Sans,Arial,sans-serif" font-size="30">recommender-objective-lab</text>
+</svg>
