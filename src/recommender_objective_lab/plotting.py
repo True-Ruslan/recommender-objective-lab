@@ -36,7 +36,7 @@ def make_figures(results_dir: Path, figures_dir: Path) -> list[Path]:
     ax.set_ylabel("Satisfaction")
     fig.tight_layout()
     path = figures_dir / "01_pareto_ctr_vs_satisfaction.png"
-    fig.savefig(path, dpi=180)
+    fig.savefig(path, dpi=120)
     plt.close(fig)
     created.append(path)
 
@@ -59,7 +59,7 @@ def make_figures(results_dir: Path, figures_dir: Path) -> list[Path]:
     ax.set_ylabel("Mean sessions")
     fig.tight_layout()
     path = figures_dir / "02_alpha_vs_mean_sessions.png"
-    fig.savefig(path, dpi=180)
+    fig.savefig(path, dpi=120)
     plt.close(fig)
     created.append(path)
 
@@ -85,7 +85,7 @@ def make_figures(results_dir: Path, figures_dir: Path) -> list[Path]:
         fig.colorbar(image, ax=ax, label=label)
         fig.tight_layout()
         path = figures_dir / f"{number}_sensitivity_{metric}.png"
-        fig.savefig(path, dpi=180)
+        fig.savefig(path, dpi=120)
         plt.close(fig)
         created.append(path)
 
@@ -107,7 +107,7 @@ def make_figures(results_dir: Path, figures_dir: Path) -> list[Path]:
         ax.set_xlabel("Value-aware − engagement")
         fig.tight_layout()
         path = figures_dir / f"{number}_{metric}.png"
-        fig.savefig(path, dpi=180)
+        fig.savefig(path, dpi=120)
         plt.close(fig)
         created.append(path)
 

@@ -1,16 +1,16 @@
 # Recommender Objective Lab
 
-A small reproducible **synthetic** experiment about objective design in
-recommender systems: what changes when a ranker optimizes short-term engagement
-versus a broader, value-aware objective?
+A reproducible **synthetic experiment** about objective design in recommender systems: what changes when a ranker optimizes short-term engagement instead of a broader proxy for long-term user value?
 
-The project is intended as a research/reproducibility artifact for a technical
-article. It is **not** a calibrated model of YouTube, TikTok, X, Pinterest, or
-any other real platform.
+> The repository is a mechanism-demonstration and reproducibility artifact. It is **not** a calibrated model of YouTube, TikTok, X, Pinterest, or any other real platform.
 
-## Core question
+## The question
 
-Suppose a recommender can optimize either:
+A recommender rarely optimizes an abstract notion of "what is good for the user" directly. It optimizes measurable proxies. This project asks a narrower technical question:
+
+**If an observable engagement proxy and a broader synthetic value objective are not identical, can optimizing them lead to systematically different trajectories?**
+
+The two endpoint objectives are:
 
 ```python
 engagement_score = (
@@ -19,7 +19,7 @@ engagement_score = (
 )
 ```
 
-or a broader synthetic objective:
+and:
 
 ```python
 value_score = (
@@ -29,46 +29,61 @@ value_score = (
 )
 ```
 
-If short-term observable behavior and long-horizon user value are not identical,
-do the two objective functions produce different trajectories?
+A continuous sweep interpolates between them with `alpha ∈ [0, 1]`.
+
+## Experiment loop
+
+```mermaid
+flowchart LR
+    U[Synthetic user state] --> C[Candidate items]
+    C --> R[Ranker objective]
+    R --> I[Recommended item]
+    I --> B[Click / dwell / satisfaction]
+    B --> F[Fatigue + preference update]
+    F --> Q[Return probability]
+    Q --> U
+
+    R -. engagement-first .-> E[Short-horizon proxy]
+    R -. value-aware .-> V[Broader synthetic objective]
+```
+
+The environment contains delayed effects: repeated exposure may create category-specific fatigue, consumed content may slightly shift current preferences, and session return probability depends on the resulting synthetic experience.
 
 ## Reference result
 
-Using the `article` preset (20 seeds × 400 users), the baseline simulation
-produces approximately:
+Using the `article` preset (**20 seeds × 400 users**), the baseline simulation produces approximately:
 
 | Metric | Engagement-first | Value-aware |
 |---|---:|---:|
-| CTR | 0.702 | 0.607 |
-| Satisfaction | 0.682 | 0.908 |
-| Mean sessions | 7.53 | 8.83 |
-| Diversity | 0.358 | 0.498 |
-| Fatigue | 0.153 | 0.129 |
-| Preference drift | 0.254 | 0.147 |
+| CTR | **0.702** | 0.607 |
+| Satisfaction | 0.682 | **0.908** |
+| Mean sessions | 7.53 | **8.83** |
+| Diversity | 0.358 | **0.498** |
+| Fatigue | 0.153 | **0.129** |
+| Preference drift | 0.254 | **0.147** |
 
-These are **model outputs**, not estimates of real platform metrics.
+These are **model outputs**, not estimates of real platform metrics. The interesting result is the trade-off: the engagement-first policy wins on the metric it was designed to maximize, while the value-aware policy performs better on the broader synthetic outcomes.
 
-The important result is the trade-off, not the specific values: the
-engagement-first policy does better on the metric it was built to optimize,
-while the value-aware policy scores better on the broader synthetic outcome.
+### Objective trade-off
 
-## What makes the experiment useful
+![CTR vs satisfaction trade-off](results/reference/figures/01_pareto_ctr_vs_satisfaction.png)
+
+The repository's plotting pipeline also generates the objective-mix curve, sensitivity heatmaps and ablation plots used in analysis.
+
+A particularly informative ablation removes fatigue. In the baseline model the value-aware advantage in satisfaction is large; once fatigue is removed, the gap becomes much smaller. Under these assumptions, delayed consumption costs are therefore an important mechanism behind the short-vs-long-horizon divergence.
+
+## What is tested
 
 The repository includes:
 
-- baseline policy comparison;
-- 20-seed robustness analysis;
+- baseline comparison of two ranking objectives;
+- **20-seed** robustness analysis;
 - one-factor-at-a-time sensitivity analysis;
-- ablation study;
+- ablations for preference drift, fatigue, novelty and actual/ideal preference alignment;
 - continuous objective sweep `alpha ∈ [0, 1]`;
 - article-facing CSV tables;
 - reproducible figures;
-- explicit claim/interpretation boundaries.
-
-A particularly useful ablation is removing fatigue. In the baseline model the
-value-aware advantage in satisfaction is large; without fatigue it becomes much
-smaller. This suggests that the short-vs-long-term divergence in this environment
-is driven strongly by **delayed consumption costs**, not just by preference drift.
+- explicit claim and interpretation boundaries.
 
 ## Repository layout
 
@@ -76,20 +91,20 @@ is driven strongly by **delayed consumption costs**, not just by preference drif
 .
 ├── src/recommender_objective_lab/
 │   ├── simulation.py      # synthetic environment and rankers
-│   ├── experiments.py     # baseline, robustness, ablations, alpha sweep
+│   ├── experiments.py     # baseline, sensitivity, ablations, alpha sweep
 │   ├── plotting.py        # article figures
 │   └── cli.py             # reproducible CLI
 ├── tests/
 ├── docs/
 │   ├── methodology.md
 │   └── claim-boundaries.md
-├── results/reference/     # committed reference outputs
+├── results/reference/     # curated reference outputs
 ├── REFERENCES.md
 ├── pyproject.toml
 └── Makefile
 ```
 
-## Installation
+## Reproduce
 
 Python 3.10+.
 
@@ -99,21 +114,13 @@ source .venv/bin/activate
 python -m pip install -e ".[dev]"
 ```
 
-Or with requirements:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-## Reproduce
-
 Fast smoke run:
 
 ```bash
 python -m recommender_objective_lab --preset quick --out results/quick
 ```
 
-Article/reference configuration:
+Reference/article configuration:
 
 ```bash
 python -m recommender_objective_lab --preset article --out results/article
@@ -133,9 +140,9 @@ The `article` preset uses:
 - 20 random seeds;
 - 400 users per seed;
 - 12 possible sessions;
-- 5 recommendation opportunities/session;
+- 5 recommendation opportunities per session;
 - 8 content categories;
-- 1,200 items;
+- 1,200 synthetic items;
 - 20 candidates per recommendation.
 
 ## Test
@@ -144,30 +151,17 @@ The `article` preset uses:
 python -m pytest -q
 ```
 
-## Main figures
-
-The reproduction command generates:
-
-1. CTR vs satisfaction objective trade-off;
-2. objective mix vs mean sessions;
-3. sensitivity heatmaps;
-4. ablation deltas for satisfaction, sessions and CTR.
-
 ## Interpretation boundary
 
-This project demonstrates a mechanism under explicit assumptions.
-
-It does **not** demonstrate that:
+This experiment can demonstrate a **possible mechanism under explicit assumptions**. It does **not** demonstrate that:
 
 - a named social platform manipulates users;
 - engagement optimization is inherently harmful;
 - real preference formation follows the equations used here;
-- the synthetic satisfaction function is an ethically correct definition of welfare;
-- the coefficients used here are production-optimal.
+- the synthetic satisfaction function is the ethically correct definition of welfare;
+- the chosen coefficients are production-optimal.
 
-Read [`docs/methodology.md`](docs/methodology.md) for the model assumptions and
-[`docs/claim-boundaries.md`](docs/claim-boundaries.md) before making claims from
-the results.
+Read [`docs/methodology.md`](docs/methodology.md) for the assumptions and [`docs/claim-boundaries.md`](docs/claim-boundaries.md) before making claims from the results.
 
 ## Research context
 
