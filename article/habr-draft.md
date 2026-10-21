@@ -40,9 +40,9 @@ engagement_score = (
 
 > какой объект даст пользователю больше долгосрочной ценности?
 
-В работе *From Optimizing Engagement to Measuring Value* Smitha Milli, Luca Belli и Moritz Hardt формулируют эту проблему как проблему измерения: engagement наблюдаем, а интересующий нас value остаётся латентной конструкцией.
+В работе *From Optimizing Engagement to Measuring Value* Smitha Milli, Luca Belli и Moritz Hardt [2] формулируют эту проблему через measurement theory: engagement наблюдаем, а интересующий нас value остаётся латентной конструкцией, которую ещё нужно операционализировать.
 
-Есть и production-пример. В RecSys 2024 команда Google описала Learned Ranking Function: ranking получает short-term behavior predictions, но сама функция обучения ориентируется на long-term user satisfaction. Авторы сообщают о live experiments и deployment на YouTube.
+Есть и production-пример. В RecSys 2024 команда Google [1] описала Learned Ranking Function: система принимает short-term user-item behavior predictions и формирует рекомендации с objective на long-term user satisfaction. Авторы прямо сообщают о live experiments и deployment на YouTube.
 
 То есть различие между «поведением сейчас» и «удовлетворённостью на длинном горизонте» — вполне инженерная постановка задачи.
 
@@ -58,14 +58,14 @@ engagement_score = (
 
 Для множества задач это разумное приближение. Но в динамической системе оно не обязано быть полным.
 
-Kleinberg, Mullainathan и Raghavan показывают теоретически: если предпочтения пользователя внутренне несовместимы, одной истории engagement может быть недостаточно, чтобы восстановить его utility.
+Kleinberg, Mullainathan и Raghavan [4] рассматривают теоретическую модель пользователя с inconsistent preferences и платформу, которая хочет максимизировать user utility, но наблюдает только engagement. В такой постановке рост engagement не обязан означать рост utility.
 
-Есть и экспериментальный результат. В работе *Tailoring recommendation algorithms to ideal preferences makes users better off* рекомендации строили по двум типам предпочтений:
+Есть и экспериментальный результат. В работе *Tailoring recommendation algorithms to ideal preferences makes users better off* [5] рекомендации строили по двум типам предпочтений:
 
-- **actual** — что человек склонен выбрать прямо сейчас;
-- **ideal** — что он сам считает более желательным после рефлексии.
+- **actual** — насколько человек *actually* хочет прочитать материал;
+- **ideal** — насколько он *ideally* хотел бы его прочитать.
 
-В preregistered experiment на 6488 участниках рекомендации по actual preferences давали больше кликов, а рекомендации по ideal preferences повышали оценки вроде «это сделает меня лучше» и «время было потрачено не зря».
+В основном preregistered study участвовали 6488 человек. В primary analysis авторы отдельно рассмотрели случаи, когда actual- и ideal-рекомендации различались (`n=2504`): actual-рекомендацию открывали в 52% случаев, ideal — в 40%. При этом ideal-рекомендации получали более высокие оценки по тому, насколько человек чувствовал себя «better off» и насколько считал время потраченным не зря.
 
 То есть больше кликов и больше субъективной ценности могут быть **разными оптимизационными задачами**.
 
@@ -98,7 +98,9 @@ return probability
 
 Поэтому локально хороший instant reward может иметь стоимость, которая проявится позже.
 
-Saig и Rosenfeld в ICML 2023 рассматривают похожую идею: recommendation dynamics включают и positive, и negative feedback, а временное снижение engagement — например, предложенный break — в некоторых условиях способно увеличить устойчивое long-term engagement.
+Saig и Rosenfeld [6] в ICML 2023 моделируют recommendation dynamics через positive и negative feedback и изучают policies, которые предлагают пользователю breaks ради устойчивого long-term engagement. Важно: эмпирическую часть они показывают на **semi-synthetic data**, поэтому переносить результат напрямую на реальную платформу нельзя.
+
+Отдельно Lindström et al. [7] проанализировали 1 046 857 постов от 4168 пользователей нескольких соцплатформ и провели online experiment (`n=176`). Их результаты согласуются с reward-learning account социального поведения. Это не доказательство того, что recommender меняет предпочтения пользователя, но хороший аргумент не считать поведение полностью статичным.
 
 ---
 
@@ -292,7 +294,7 @@ alpha = 0 — engagement-first, alpha = 1 — value-aware.
 
 Вывод не в том, что CTR надо перестать считать. CTR, dwell time, conversion и другие immediate metrics крайне полезны.
 
-Но есть несколько инженерных следствий.
+Но есть несколько инженерных следствий. Причём value-sensitive ranking — не только теоретическая идея: Stray et al. [3] собирают примеры реальных recommender systems, которые модифицировали ради diversity, fairness, well-being, time well spent и factual accuracy.
 
 ## 1. Proxy должен оставаться proxy
 
@@ -379,9 +381,9 @@ Synthetic simulation очень легко превратить в красив�
 
 У проблемы есть очень старая форма: **средство легко перепутать с целью**.
 
-У Аристотеля часть вещей ценна инструментально — мы выбираем их ради чего-то ещё. CTR почти идеальный инженерный пример такой величины: нам нужен не клик как таковой, а информация о более важном результате.
+У Аристотеля в книге I *Никомаховой этики* [8] проводится различие между целями, которые выбираются ради чего-то ещё, и тем, что желанно само по себе. CTR почти идеальный инженерный пример инструментальной величины: нам нужен не клик как таковой, а информация о более важном результате.
 
-Есть и параллель с христианской антропологией: непосредственное желание человека не обязано совпадать с тем, что он после рефлексии назвал бы благом. Это, конечно, не evidence и не specification для recommender system. Но интеллектуальная рамка полезна: **наблюдаемый импульс и осознанная цель — не одно и то же по определению**.
+Есть и близкая — хотя, конечно, не техническая — православная параллель. В Рим. 7:15–19 [9] апостол Павел описывает конфликт между тем, чего человек хочет как блага, и тем, что фактически делает: «доброго, которого хочу, не делаю». Это не evidence для recommender systems и не тождество с actual/ideal preferences из исследования [5]. Но как интеллектуальная аналогия мысль полезна: **наблюдаемое действие и рефлексивно признаваемая цель не обязаны совпадать**.
 
 В инженерной формулировке всё ещё проще:
 
@@ -406,10 +408,15 @@ https://github.com/True-Ruslan/recommender-objective-lab
 
 ## Литература
 
-1. Wu Y. et al. *Learned Ranking Function: From Short-term Behavior Predictions to Long-term User Satisfaction.* RecSys 2024. DOI: 10.1145/3640457.3688184.
-2. Milli S., Belli L., Hardt M. *From Optimizing Engagement to Measuring Value.* FAccT 2021. DOI: 10.1145/3442188.3445933.
-3. Stray J. et al. *What are you optimizing for? Aligning Recommender Systems with Human Values.* 2021.
-4. Kleinberg J., Mullainathan S., Raghavan M. *The Challenge of Understanding What Users Want: Inconsistent Preferences and Engagement Optimization.* 2022.
-5. Khambatta P. et al. *Tailoring recommendation algorithms to ideal preferences makes users better off.* Scientific Reports, 2023. DOI: 10.1038/s41598-023-34192-x.
-6. Saig E., Rosenfeld N. *Learning to Suggest Breaks: Sustainable Optimization of Long-Term User Engagement.* ICML 2023.
-7. Lindström B. et al. *A computational reward learning account of social media engagement.* Nature Communications, 2021. DOI: 10.1038/s41467-020-19607-x.
+1. Wu Y. et al. *Learned Ranking Function: From Short-term Behavior Predictions to Long-term User Satisfaction.* RecSys 2024, pp. 1004–1009. [DOI](https://doi.org/10.1145/3640457.3688184), [arXiv](https://arxiv.org/abs/2408.06512).
+2. Milli S., Belli L., Hardt M. *From Optimizing Engagement to Measuring Value.* FAccT 2021, pp. 714–722. [DOI](https://doi.org/10.1145/3442188.3445933), [arXiv](https://arxiv.org/abs/2008.12623).
+3. Stray J. et al. *What are you optimizing for? Aligning Recommender Systems with Human Values.* arXiv:2107.10939, 2021; originally presented at the ICML 2020 Participatory Approaches to Machine Learning workshop. [arXiv](https://arxiv.org/abs/2107.10939).
+4. Kleinberg J., Mullainathan S., Raghavan M. *The Challenge of Understanding What Users Want: Inconsistent Preferences and Engagement Optimization.* 2022. [arXiv](https://arxiv.org/abs/2202.11776).
+5. Khambatta P. et al. *Tailoring recommendation algorithms to ideal preferences makes users better off.* Scientific Reports 13, 9325 (2023). [DOI](https://doi.org/10.1038/s41598-023-34192-x).
+6. Saig E., Rosenfeld N. *Learning to Suggest Breaks: Sustainable Optimization of Long-Term User Engagement.* ICML 2023, PMLR 202:29671–29696. [PMLR](https://proceedings.mlr.press/v202/saig23a.html).
+7. Lindström B. et al. *A computational reward learning account of social media engagement.* Nature Communications 12, 1311 (2021). [DOI](https://doi.org/10.1038/s41467-020-19607-x).
+
+### Философская и богословская параллель
+
+8. Aristotle. *Nicomachean Ethics*, Book I, especially chapters 1–2 and 7. [Internet Classics Archive](https://classics.mit.edu/Aristotle/nicomachaen.1.i.html).
+9. Послание апостола Павла к Римлянам 7:15–19. В православном литургическом контексте этот отрывок входит в чтение Рим. 7:14–8:2. [Orthodox Church in America](https://www.oca.org/readings/daily/2026/06/16/1).
