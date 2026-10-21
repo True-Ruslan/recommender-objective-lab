@@ -1,0 +1,13 @@
+parameter,value,delta_CTR,delta_satisfaction,delta_mean_sessions
+actual_ideal_alignment,0.5,-0.0993,0.2849,1.7709
+actual_ideal_alignment,0.7,-0.095,0.2261,1.2954
+actual_ideal_alignment,0.9,-0.1013,0.2228,1.1734
+actual_ideal_alignment,1.0,-0.1036,0.2242,1.2701
+fatigue_gain,0.0,-0.0494,0.0619,0.281
+fatigue_gain,0.1,-0.0954,0.1508,0.6775
+fatigue_gain,0.22,-0.095,0.2261,1.2954
+fatigue_gain,0.35,-0.0688,0.2135,1.4355
+reinforcement,0.0,-0.0556,0.1395,0.8829
+reinforcement,0.02,-0.0631,0.1607,0.9239
+reinforcement,0.04,-0.095,0.2261,1.2954
+reinforcement,0.08,-0.1479,0.3215,1.9821

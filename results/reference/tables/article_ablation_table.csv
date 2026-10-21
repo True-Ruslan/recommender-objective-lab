@@ -1,0 +1,6 @@
+ablation,delta_CTR,delta_satisfaction,delta_mean_sessions,delta_diversity,delta_fatigue,delta_preference_drift
+actual_equals_ideal,-0.1036,0.2242,1.2701,0.1797,-0.024,-0.099
+baseline,-0.095,0.2261,1.2954,0.1402,-0.0235,-0.1068
+no_fatigue,-0.0494,0.0619,0.281,0.0971,0.0,-0.0803
+no_novelty,-0.0523,0.1954,1.151,-0.0157,-0.0187,-0.0565
+no_preference_drift,-0.0556,0.1395,0.8829,0.0084,-0.0206,0.0003
